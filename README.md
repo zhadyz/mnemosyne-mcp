@@ -1,104 +1,80 @@
-# Mnemosyne MCP 🧠
+# Mnemosyne MCP
 
-**FREE Local Embeddings for Knowledge Graph Memory - Zero API Costs**
-
-Mnemosyne MCP is a powerful memory system for AI agents and LLMs, featuring **100% FREE local semantic search** using ONNX Runtime. Never pay for embeddings again!
+Knowledge graph memory for AI agents with local semantic search. Zero API costs.
 
 > Named after Mnemosyne, the Greek goddess of memory and mother of the Muses.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js >= 20](https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen)](https://nodejs.org/)
 
-## 🎯 Why Mnemosyne?
+## Overview
 
-### The Problem with Traditional Memory Systems
+Mnemosyne provides persistent memory for AI agents using Neo4j knowledge graphs and local vector embeddings. Unlike traditional solutions requiring paid API access, Mnemosyne runs embeddings locally via ONNX Runtime.
 
-Most AI memory systems using embeddings require:
-- 💸 **Paid API keys** (OpenAI: ~$0.02 per 1M tokens)
-- 🔐 **API credentials** to manage
-- 🌐 **Internet connection** for every operation
-- 🔒 **Privacy concerns** - your data leaves your machine
+**Key Features:**
+- Local semantic search with BGE embeddings
+- No API keys or external dependencies
+- Works offline after initial setup
+- Compatible with Model Context Protocol (MCP)
+- Drop-in replacement for cloud-based solutions
 
-### The Mnemosyne Solution
+## Performance Comparison
 
-✅ **100% FREE** - No API costs, ever
-✅ **No API Keys** - Works out of the box
-✅ **100% Local** - Complete privacy, data never leaves your machine
-✅ **Offline-First** - Works without internet (after initial model download)
-✅ **Semantic Search** - Powerful BGE embeddings for intelligent memory retrieval
-✅ **Drop-in Replacement** - Compatible with existing MCP workflows
+| Metric | Cloud Services | Mnemosyne |
+|--------|---------------|-----------|
+| Cost | ~$0.02/1M tokens | Free |
+| API Key | Required | None |
+| Network | Always required | Initial download only |
+| Privacy | External | Local |
+| Latency | ~100ms | ~200-500ms |
 
-## 📊 Cost Comparison
-
-| Feature | OpenAI (Original) | Mnemosyne (This) |
-|---------|-------------------|------------------|
-| **Cost** | ~$0.02 per 1M tokens | **FREE** ✅ |
-| **API Key** | Required | **Not Required** ✅ |
-| **Internet** | Always required | Only for first-time setup |
-| **Privacy** | Data sent to OpenAI | **100% Local** ✅ |
-| **Speed** | Fast (~100ms) | Medium (~200-500ms) |
-| **Quality** | Excellent | Very Good |
-
-## 🚀 Quick Start
+## Installation
 
 ### Prerequisites
 
-1. **Node.js** >= 20.0.0
-2. **Neo4j** Database ([Download Neo4j Desktop](https://neo4j.com/download/))
+- Node.js >= 20.0.0
+- Neo4j Database ([Download](https://neo4j.com/download/))
 
-### Installation
+### Setup
 
 ```bash
-# Clone the repository
 git clone https://github.com/zhadyz/mnemosyne-mcp.git
 cd mnemosyne-mcp
-
-# Install dependencies
 npm install
-
-# Build the project
 npm run build
 ```
 
-### Neo4j Setup
+### Neo4j Configuration
 
-1. Install Neo4j Desktop from https://neo4j.com/download/
-2. Create a new database instance
-3. Set password (we'll use `memento123` in examples)
-4. Start the database
+1. Install Neo4j Desktop
+2. Create a database instance
+3. Set credentials (default password: `memento123`)
+4. Start the database (default port: 7687)
 
-### Configuration
+### Environment Configuration
 
-Create a `.env` file in the project root:
+Create `.env` in project root:
 
 ```bash
-# Embedding Provider (local = FREE!)
 EMBEDDING_PROVIDER=local
-
-# Local Embedding Model (choose one):
-# - Xenova/bge-base-en-v1.5 (768d, ~90MB) - RECOMMENDED
-# - Xenova/bge-small-en-v1.5 (384d, ~30MB) - Fastest
-# - Xenova/bge-large-en-v1.5 (1024d, ~200MB) - Best quality
-# - Xenova/bge-m3 (1024d, ~200MB) - Multilingual
 LOCAL_EMBEDDING_MODEL=Xenova/bge-base-en-v1.5
 
-# Neo4j Configuration
 NEO4J_URI=bolt://127.0.0.1:7687
 NEO4J_USERNAME=neo4j
 NEO4J_PASSWORD=memento123
 NEO4J_DATABASE=neo4j
 ```
 
-### Claude Desktop Integration
+### MCP Integration
 
-Add to your Claude Desktop config (`~/.config/claude/claude_desktop_config.json` on macOS/Linux or `%APPDATA%\Claude\claude_desktop_config.json` on Windows):
+Add to Claude Desktop config (`claude_desktop_config.json`):
 
 ```json
 {
   "mcpServers": {
     "mnemosyne": {
       "command": "node",
-      "args": ["/path/to/mnemosyne-mcp/dist/index.js"],
+      "args": ["/absolute/path/to/mnemosyne-mcp/dist/index.js"],
       "env": {
         "NEO4J_URI": "bolt://127.0.0.1:7687",
         "NEO4J_USERNAME": "neo4j",
@@ -112,40 +88,24 @@ Add to your Claude Desktop config (`~/.config/claude/claude_desktop_config.json`
 }
 ```
 
-### First Run
+## Embedding Models
 
-On first use, Mnemosyne will automatically download the BGE model (~90MB for base model). This happens once and is cached locally in `~/.cache/huggingface/`.
+Mnemosyne supports multiple BGE models:
 
-**Subsequent runs work 100% offline!**
-
-## 🎨 Features
-
-### Core Features
-
-- **Knowledge Graph Memory** - Store entities, observations, and relationships
-- **Semantic Search** - Find relevant memories using natural language
-- **Temporal Awareness** - Track when information was learned
-- **Versioning** - Keep history of all changes
-- **Confidence Scoring** - Track reliability of stored information
-- **Vector Decay** - Confidence decreases over time (configurable)
-
-### Local Embedding Models
-
-Mnemosyne supports multiple BGE (BAAI General Embedding) models:
-
-| Model | Dimensions | Size | Best For |
+| Model | Dimensions | Size | Use Case |
 |-------|-----------|------|----------|
-| **bge-base-en-v1.5** | 768 | ~90MB | Balanced performance (default) |
-| **bge-small-en-v1.5** | 384 | ~30MB | Speed and low memory |
-| **bge-large-en-v1.5** | 1024 | ~200MB | Maximum accuracy |
-| **bge-m3** | 1024 | ~200MB | Multilingual support |
+| bge-base-en-v1.5 | 768 | 90MB | Balanced (default) |
+| bge-small-en-v1.5 | 384 | 30MB | Resource-constrained |
+| bge-large-en-v1.5 | 1024 | 200MB | Maximum accuracy |
+| bge-m3 | 1024 | 200MB | Multilingual |
 
-## 📖 Usage Examples
+Models download automatically on first use and cache to `~/.cache/huggingface/`.
 
-### Create Entities and Memories
+## Usage
+
+### Create Entities
 
 ```javascript
-// Create an entity
 {
   "name": "create_entities",
   "arguments": {
@@ -154,14 +114,17 @@ Mnemosyne supports multiple BGE (BAAI General Embedding) models:
       "entityType": "programming_language",
       "observations": [
         "Strongly typed superset of JavaScript",
-        "Compiles to plain JavaScript",
-        "Great for large-scale applications"
+        "Compiles to JavaScript",
+        "Static type checking"
       ]
     }]
   }
 }
+```
 
-// Search semantically
+### Semantic Search
+
+```javascript
 {
   "name": "semantic_search",
   "arguments": {
@@ -171,7 +134,7 @@ Mnemosyne supports multiple BGE (BAAI General Embedding) models:
 }
 ```
 
-### Build Relationships
+### Create Relations
 
 ```javascript
 {
@@ -186,84 +149,69 @@ Mnemosyne supports multiple BGE (BAAI General Embedding) models:
 }
 ```
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 EmbeddingServiceFactory
-├── DefaultEmbeddingService (random vectors, testing)
-├── OpenAIEmbeddingService (paid, cloud-based)
-└── LocalEmbeddingService (FREE, local ONNX) ✨ NEW!
+├── DefaultEmbeddingService (testing)
+├── OpenAIEmbeddingService (cloud)
+└── LocalEmbeddingService (ONNX)
 ```
 
-All services implement the same `IEmbeddingService` interface, making them completely interchangeable.
+All services implement `IEmbeddingService`, enabling seamless provider swapping.
 
-### How Local Embeddings Work
+### Local Embeddings Stack
 
-1. **ONNX Runtime** - Optimized inference engine for ML models
-2. **Transformers.js** - JavaScript library leveraging ONNX Runtime
-3. **BGE Models** - State-of-the-art embedding models from BAAI
-4. **Vector Normalization** - L2 normalization for similarity search
+- **ONNX Runtime:** Optimized ML inference
+- **Transformers.js:** JavaScript ML library
+- **BGE Models:** BAAI general embeddings
+- **L2 Normalization:** Vector similarity search
 
-## 🔧 Development
+## Development
 
 ```bash
-# Run tests
-npm test
-
-# Run tests in watch mode
-npm run test:watch
-
-# Build
-npm run build
-
-# Development mode (watch)
-npm run dev
-
-# Lint and format
-npm run fix
+npm test              # Run tests
+npm run test:watch    # Watch mode
+npm run build         # Build
+npm run dev           # Development mode
+npm run fix           # Lint and format
 ```
 
-## 📦 Environment Variables
+## Configuration
 
 | Variable | Options | Description |
 |----------|---------|-------------|
-| `EMBEDDING_PROVIDER` | `auto`, `local`, `openai` | Embedding provider selection |
-| `LOCAL_EMBEDDING_MODEL` | BGE model name | Which local model to use |
-| `NEO4J_URI` | `bolt://...` | Neo4j connection string |
-| `NEO4J_USERNAME` | string | Neo4j username |
-| `NEO4J_PASSWORD` | string | Neo4j password |
-| `NEO4J_DATABASE` | string | Neo4j database name |
+| `EMBEDDING_PROVIDER` | `auto`, `local`, `openai` | Provider selection |
+| `LOCAL_EMBEDDING_MODEL` | BGE model name | Local model choice |
+| `NEO4J_URI` | `bolt://...` | Database connection |
+| `NEO4J_USERNAME` | string | Database user |
+| `NEO4J_PASSWORD` | string | Database password |
+| `NEO4J_DATABASE` | string | Database name |
 
-### Provider Selection Logic
+**Provider Selection:**
+- `auto`: OpenAI if API key present, otherwise local
+- `local`: Always use local embeddings
+- `openai`: Always use OpenAI (requires API key)
 
-- **`auto`** (default): Uses OpenAI if `OPENAI_API_KEY` is present, otherwise falls back to local
-- **`local`**: Always uses FREE local embeddings (recommended)
-- **`openai`**: Always uses OpenAI embeddings (requires API key)
+## Credits
 
-## 🎓 Credits
+Forked from [memento-mcp](https://github.com/gannonh/memento-mcp) by Gannon Hall.
 
-This project is a fork of [memento-mcp](https://github.com/gannonh/memento-mcp) by Gannon Hall.
+**Additions:**
+- Local ONNX embedding support
+- BGE model integration
+- Auto-fallback configuration
+- Zero-dependency operation
 
-**What we added:**
-- ✨ FREE local embeddings using ONNX Runtime
-- 🎯 Support for multiple BGE models
-- 🔧 Auto-fallback when no API key present
-- 📚 Comprehensive configuration options
+## License
 
-## 📄 License
+MIT License - see [LICENSE](LICENSE) file.
 
-MIT License - see [LICENSE](LICENSE) file for details.
+## Contributing
 
-## 🤝 Contributing
-
-Contributions welcome! Please feel free to submit a Pull Request.
-
-## 🌟 Star History
-
-If you find Mnemosyne useful, please consider giving it a star! ⭐
+Pull requests welcome.
 
 ---
 
-**Built with** 🧠 by [zhadyz](https://github.com/zhadyz)
-**Powered by** ONNX Runtime + Transformers.js + BGE Embeddings
-**Free as in freedom, free as in beer** 🍺
+Built by [zhadyz](https://github.com/zhadyz)
+Powered by ONNX Runtime + Transformers.js + BGE Embeddings
