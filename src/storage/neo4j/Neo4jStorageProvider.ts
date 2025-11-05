@@ -135,11 +135,14 @@ export class Neo4jStorageProvider implements StorageProvider {
     // Set up schema manager
     this.schemaManager = new Neo4jSchemaManager(this.connectionManager, this.config, false);
 
+    // Get dimensions from embedding service (default to 768 for BGE models)
+    let embeddingDimensions = 768; // Default for local BGE models
+
     // Set up vector store
     this.vectorStore = new Neo4jVectorStore({
       connectionManager: this.connectionManager,
       indexName: this.config.vectorIndexName,
-      dimensions: 1536,
+      dimensions: embeddingDimensions,
       similarityFunction: 'cosine',
       entityNodeLabel: 'Entity',
     });
