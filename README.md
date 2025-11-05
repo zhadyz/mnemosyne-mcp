@@ -78,14 +78,7 @@ NEO4J_DATABASE=neo4j
 Add Mnemosyne to Claude Code with a single command:
 
 ```bash
-claude mcp add --scope user mnemosyne \
-  -e NEO4J_URI=bolt://127.0.0.1:7687 \
-  -e NEO4J_USERNAME=neo4j \
-  -e NEO4J_PASSWORD=memento123 \
-  -e NEO4J_DATABASE=neo4j \
-  -e EMBEDDING_PROVIDER=local \
-  -e LOCAL_EMBEDDING_MODEL=Xenova/bge-base-en-v1.5 \
-  -- npx -y @zhadyz/mnemosyne-mcp
+claude mcp add --scope user mnemosyne -- npx -y @zhadyz/mnemosyne-mcp
 ```
 
 Verify it's installed:
@@ -94,6 +87,21 @@ claude mcp list
 ```
 
 You should see `mnemosyne: npx -y @zhadyz/mnemosyne-mcp - ✓ Connected`
+
+**Default Configuration:**
+- Neo4j URI: `bolt://localhost:7687`
+- Username/Password: `neo4j` / `neo4j`
+- Database: `neo4j`
+- Embeddings: Local (BGE base-en-v1.5, 768 dimensions)
+
+**Custom Neo4j Setup:**
+If you use different credentials, edit `~/.claude.json` and add environment variables:
+
+```bash
+claude mcp add --scope user mnemosyne \
+  -e NEO4J_PASSWORD=your_password \
+  -- npx -y @zhadyz/mnemosyne-mcp
+```
 
 ### Claude Desktop
 
