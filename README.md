@@ -54,7 +54,7 @@ npm run build
 
 1. Install Neo4j Desktop
 2. Create a database instance
-3. Set credentials (default password: `memento123`)
+3. Set credentials (default password: `neo4j`)
 4. Start the database (default port: 7687)
 
 ### Environment Configuration
@@ -67,7 +67,7 @@ LOCAL_EMBEDDING_MODEL=Xenova/bge-base-en-v1.5
 
 NEO4J_URI=bolt://127.0.0.1:7687
 NEO4J_USERNAME=neo4j
-NEO4J_PASSWORD=memento123
+NEO4J_PASSWORD=neo4j
 NEO4J_DATABASE=neo4j
 ```
 
@@ -116,7 +116,7 @@ Add to `claude_desktop_config.json`:
       "env": {
         "NEO4J_URI": "bolt://127.0.0.1:7687",
         "NEO4J_USERNAME": "neo4j",
-        "NEO4J_PASSWORD": "memento123",
+        "NEO4J_PASSWORD": "neo4j",
         "NEO4J_DATABASE": "neo4j",
         "EMBEDDING_PROVIDER": "local",
         "LOCAL_EMBEDDING_MODEL": "Xenova/bge-base-en-v1.5"
@@ -137,7 +137,7 @@ Add to `claude_desktop_config.json`:
       "env": {
         "NEO4J_URI": "bolt://127.0.0.1:7687",
         "NEO4J_USERNAME": "neo4j",
-        "NEO4J_PASSWORD": "memento123",
+        "NEO4J_PASSWORD": "neo4j",
         "NEO4J_DATABASE": "neo4j",
         "EMBEDDING_PROVIDER": "local",
         "LOCAL_EMBEDDING_MODEL": "Xenova/bge-base-en-v1.5"
