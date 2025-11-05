@@ -1,21 +1,36 @@
 {
-  "name": "@gannonh/memento-mcp",
-  "version": "0.3.9",
-  "description": "Memento MCP: Knowledge graph memory system for LLMs",
+  "name": "@zhadyz/mnemosyne-mcp",
+  "version": "1.0.0",
+  "description": "Mnemosyne MCP: FREE Local Embeddings for Knowledge Graph Memory - No API Keys Required",
   "license": "MIT",
-  "author": "Gannon Hall",
-  "homepage": "https://github.com/gannonh/memento-mcp",
-  "bugs": "https://github.com/gannonh/memento-mcp/issues",
+  "author": "zhadyz",
+  "homepage": "https://github.com/zhadyz/mnemosyne-mcp",
+  "bugs": "https://github.com/zhadyz/mnemosyne-mcp/issues",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "memento-mcp": "dist/index.js"
+    "mnemosyne-mcp": "dist/index.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/gannonh/memento-mcp.git"
+    "url": "https://github.com/zhadyz/mnemosyne-mcp.git"
   },
+  "keywords": [
+    "mcp",
+    "memory",
+    "knowledge-graph",
+    "embeddings",
+    "local-embeddings",
+    "onnx",
+    "bge",
+    "semantic-search",
+    "neo4j",
+    "free",
+    "no-api-key",
+    "llm",
+    "ai-agent"
+  ],
   "files": [
     "dist"
   ],
@@ -37,6 +52,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.11.0",
+    "@huggingface/transformers": "^3.2.1",
     "axios": "^1.8.4",
     "dotenv": "^16.4.7",
     "lru-cache": "^11.1.0",

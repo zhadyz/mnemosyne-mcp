@@ -1,6 +1,7 @@
 import type { EmbeddingService } from './EmbeddingService.js';
 import { DefaultEmbeddingService } from './DefaultEmbeddingService.js';
 import { OpenAIEmbeddingService } from './OpenAIEmbeddingService.js';
+import { LocalEmbeddingService } from './LocalEmbeddingService.js';
 import { logger } from '../utils/logger.js';
 
 /**
@@ -99,11 +100,13 @@ export class EmbeddingServiceFactory {
   static createFromEnvironment(): EmbeddingService {
     // Check if we should use mock embeddings (for testing)
     const useMockEmbeddings = process.env.MOCK_EMBEDDINGS === 'true';
+    const embeddingProvider = process.env.EMBEDDING_PROVIDER?.toLowerCase() || 'auto';
 
     logger.debug('EmbeddingServiceFactory: Creating service from environment variables', {
       mockEmbeddings: useMockEmbeddings,
+      provider: embeddingProvider,
       openaiKeyPresent: !!process.env.OPENAI_API_KEY,
-      embeddingModel: process.env.OPENAI_EMBEDDING_MODEL || 'default',
+      localModel: process.env.LOCAL_EMBEDDING_MODEL || 'default',
     });
 
     if (useMockEmbeddings) {
@@ -111,10 +114,34 @@ export class EmbeddingServiceFactory {
       return new DefaultEmbeddingService();
     }
 
+    // If explicitly set to local, use local embeddings
+    if (embeddingProvider === 'local') {
+      try {
+        const localModel = process.env.LOCAL_EMBEDDING_MODEL || 'Xenova/bge-base-en-v1.5';
+        logger.debug('EmbeddingServiceFactory: Creating local embedding service', {
+          model: localModel,
+        });
+        const service = new LocalEmbeddingService({
+          model: localModel,
+        });
+        logger.info('EmbeddingServiceFactory: Local embedding service created successfully', {
+          model: service.getModelInfo().name,
+          dimensions: service.getModelInfo().dimensions,
+          provider: 'local-onnx',
+        });
+        return service;
+      } catch (error) {
+        logger.error('EmbeddingServiceFactory: Failed to create local service', error);
+        logger.info('EmbeddingServiceFactory: Falling back to default embedding service');
+        return new DefaultEmbeddingService();
+      }
+    }
+
+    // If explicitly set to openai or auto mode with API key, use OpenAI
     const openaiApiKey = process.env.OPENAI_API_KEY;
     const embeddingModel = process.env.OPENAI_EMBEDDING_MODEL || 'text-embedding-3-small';
 
-    if (openaiApiKey) {
+    if ((embeddingProvider === 'openai' || embeddingProvider === 'auto') && openaiApiKey) {
       try {
         logger.debug('EmbeddingServiceFactory: Creating OpenAI embedding service', {
           model: embeddingModel,
@@ -136,10 +163,33 @@ export class EmbeddingServiceFactory {
       }
     }
 
-    // No OpenAI API key, using default embedding service
-    logger.info(
-      'EmbeddingServiceFactory: No OpenAI API key found, using default embedding service'
-    );
+    // No provider specified and no OpenAI key, use local embeddings as fallback
+    if (embeddingProvider === 'auto') {
+      try {
+        const localModel = process.env.LOCAL_EMBEDDING_MODEL || 'Xenova/bge-base-en-v1.5';
+        logger.info(
+          'EmbeddingServiceFactory: No OpenAI API key found, using local embeddings',
+          {
+            model: localModel,
+          }
+        );
+        const service = new LocalEmbeddingService({
+          model: localModel,
+        });
+        logger.info('EmbeddingServiceFactory: Local embedding service created successfully', {
+          model: service.getModelInfo().name,
+          dimensions: service.getModelInfo().dimensions,
+        });
+        return service;
+      } catch (error) {
+        logger.error('EmbeddingServiceFactory: Failed to create local service', error);
+        logger.info('EmbeddingServiceFactory: Falling back to default embedding service');
+        return new DefaultEmbeddingService();
+      }
+    }
+
+    // Final fallback
+    logger.info('EmbeddingServiceFactory: Using default embedding service');
     return new DefaultEmbeddingService();
   }
 
@@ -188,5 +238,13 @@ EmbeddingServiceFactory.registerProvider('openai', (config = {}) => {
     apiKey: config.apiKey,
     model: config.model,
     dimensions: config.dimensions,
+  });
+});
+
+EmbeddingServiceFactory.registerProvider('local', (config = {}) => {
+  return new LocalEmbeddingService({
+    model: config.model,
+    dimensions: config.dimensions,
+    pooling: config.pooling as 'mean' | 'cls' | undefined,
   });
 });
