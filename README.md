@@ -73,9 +73,31 @@ NEO4J_DATABASE=neo4j
 
 ## Claude Integration
 
-### Option 1: NPX (Recommended)
+### Claude Code (Recommended)
 
-Add to Claude Desktop config (`claude_desktop_config.json`):
+Add Mnemosyne to Claude Code with a single command:
+
+```bash
+claude mcp add --scope user mnemosyne \
+  -e NEO4J_URI=bolt://127.0.0.1:7687 \
+  -e NEO4J_USERNAME=neo4j \
+  -e NEO4J_PASSWORD=memento123 \
+  -e NEO4J_DATABASE=neo4j \
+  -e EMBEDDING_PROVIDER=local \
+  -e LOCAL_EMBEDDING_MODEL=Xenova/bge-base-en-v1.5 \
+  -- npx -y @zhadyz/mnemosyne-mcp
+```
+
+Verify it's installed:
+```bash
+claude mcp list
+```
+
+You should see `mnemosyne: npx -y @zhadyz/mnemosyne-mcp - ✓ Connected`
+
+### Claude Desktop
+
+Add to `claude_desktop_config.json`:
 
 ```json
 {
@@ -96,7 +118,7 @@ Add to Claude Desktop config (`claude_desktop_config.json`):
 }
 ```
 
-### Option 2: Local Installation
+### Local Development
 
 ```json
 {
