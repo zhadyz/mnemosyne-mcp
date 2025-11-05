@@ -35,7 +35,13 @@ Mnemosyne provides persistent memory for AI agents using Neo4j knowledge graphs 
 - Node.js >= 20.0.0
 - Neo4j Database ([Download](https://neo4j.com/download/))
 
-### Setup
+### Quick Start (NPM)
+
+```bash
+npx @zhadyz/mnemosyne-mcp
+```
+
+### From Source
 
 ```bash
 git clone https://github.com/zhadyz/mnemosyne-mcp.git
@@ -44,7 +50,7 @@ npm install
 npm run build
 ```
 
-### Neo4j Configuration
+### Neo4j Setup
 
 1. Install Neo4j Desktop
 2. Create a database instance
@@ -65,9 +71,32 @@ NEO4J_PASSWORD=memento123
 NEO4J_DATABASE=neo4j
 ```
 
-### MCP Integration
+## Claude Integration
+
+### Option 1: NPX (Recommended)
 
 Add to Claude Desktop config (`claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "mnemosyne": {
+      "command": "npx",
+      "args": ["-y", "@zhadyz/mnemosyne-mcp"],
+      "env": {
+        "NEO4J_URI": "bolt://127.0.0.1:7687",
+        "NEO4J_USERNAME": "neo4j",
+        "NEO4J_PASSWORD": "memento123",
+        "NEO4J_DATABASE": "neo4j",
+        "EMBEDDING_PROVIDER": "local",
+        "LOCAL_EMBEDDING_MODEL": "Xenova/bge-base-en-v1.5"
+      }
+    }
+  }
+}
+```
+
+### Option 2: Local Installation
 
 ```json
 {
