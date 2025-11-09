@@ -163,7 +163,50 @@ claude mcp add --scope user mnemosyne \
   -- npx -y @zhadyz/mnemosyne-mcp
 ```
 
+### Dual MCP Instance Setup (Project + Global Memory)
+
+For advanced workflows, run **two separate Mnemosyne instances** - one for project-specific knowledge and one for cross-project patterns.
+
+**Architecture:**
+- **Project Instance**: Uses automatic routing (finds `.mnemosyne` in your project)
+- **Global Instance**: Always routes to `neo4j` database (forced override)
+
+**Setup:**
+
+```bash
+# Project-specific knowledge (automatic routing)
+claude mcp add --scope user mnemosyne-project -- npx -y @zhadyz/mnemosyne-mcp
+
+# Global cross-project patterns (forced to neo4j database)
+claude mcp add --scope user mnemosyne-global \
+  -e MNEMOSYNE_FORCE_DATABASE=neo4j \
+  -- npx -y @zhadyz/mnemosyne-mcp
+```
+
+**Agent Usage:**
+
+Tools appear with prefixes in Claude:
+- `mcp__mnemosyne-project__create_entities` → stores in project database
+- `mcp__mnemosyne-global__create_entities` → stores in global `neo4j` database
+
+**Decision Heuristic for Agents:**
+
+Store in **project database** when knowledge is:
+- Project-specific code: classes, functions, APIs, models
+- Project context: dependencies, architecture decisions, local conventions
+- Temporary learnings: current sprint patterns, debugging insights
+
+Store in **global database** when knowledge is:
+- Reusable patterns: error handling strategies, design patterns
+- Framework best practices: Next.js optimization, React patterns
+- Security patterns: authentication flows, input validation
+- Meta-learnings: what works across multiple projects
+
+**Default Rule**: When uncertain, store in project database. Manually promote proven patterns to global database after validation.
+
 ### Claude Desktop
+
+**Basic Setup:**
 
 Add to `claude_desktop_config.json`:
 
@@ -179,6 +222,38 @@ Add to `claude_desktop_config.json`:
         "NEO4J_PASSWORD": "neo4j",
         "EMBEDDING_PROVIDER": "local",
         "LOCAL_EMBEDDING_MODEL": "Xenova/bge-base-en-v1.5"
+      }
+    }
+  }
+}
+```
+
+**Dual Instance Setup (Project + Global):**
+
+```json
+{
+  "mcpServers": {
+    "mnemosyne-project": {
+      "command": "npx",
+      "args": ["-y", "@zhadyz/mnemosyne-mcp"],
+      "env": {
+        "NEO4J_URI": "bolt://127.0.0.1:7687",
+        "NEO4J_USERNAME": "neo4j",
+        "NEO4J_PASSWORD": "neo4j",
+        "EMBEDDING_PROVIDER": "local",
+        "LOCAL_EMBEDDING_MODEL": "Xenova/bge-base-en-v1.5"
+      }
+    },
+    "mnemosyne-global": {
+      "command": "npx",
+      "args": ["-y", "@zhadyz/mnemosyne-mcp"],
+      "env": {
+        "NEO4J_URI": "bolt://127.0.0.1:7687",
+        "NEO4J_USERNAME": "neo4j",
+        "NEO4J_PASSWORD": "neo4j",
+        "EMBEDDING_PROVIDER": "local",
+        "LOCAL_EMBEDDING_MODEL": "Xenova/bge-base-en-v1.5",
+        "MNEMOSYNE_FORCE_DATABASE": "neo4j"
       }
     }
   }

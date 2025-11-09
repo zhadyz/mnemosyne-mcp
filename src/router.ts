@@ -9,9 +9,10 @@ import { resolve, dirname, parse } from 'path';
  * Walks up directory tree from current working directory to find .mnemosyne or .env files.
  *
  * Configuration priority:
- * 1. .mnemosyne (dedicated config - preferred)
- * 2. .env (fallback)
- * 3. neo4j (global patterns database - default)
+ * 1. MNEMOSYNE_FORCE_DATABASE environment variable (override - bypasses all detection)
+ * 2. .mnemosyne (dedicated config - preferred)
+ * 3. .env (fallback)
+ * 4. neo4j (global patterns database - default)
  */
 
 interface ProjectConfig {
@@ -131,6 +132,17 @@ async function main() {
   console.error('============================================================');
   console.error('[Mnemosyne Router] Starting...');
   console.error(`[Mnemosyne Router] Working directory: ${cwd}`);
+
+  // Check for forced database override (for dual-instance setups)
+  const forcedDb = process.env.MNEMOSYNE_FORCE_DATABASE;
+  if (forcedDb) {
+    console.error(`[Mnemosyne Router] FORCE OVERRIDE: ${forcedDb}`);
+    console.error('[Mnemosyne Router] Bypassing project detection');
+    console.error('============================================================');
+    process.env.NEO4J_DATABASE = forcedDb;
+    await import('./index.js');
+    return;
+  }
 
   // Find project configuration
   const projectInfo = findProjectRoot(cwd);
