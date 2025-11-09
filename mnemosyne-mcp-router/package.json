@@ -1,0 +1,49 @@
+{
+  "name": "@zhadyz/mnemosyne-mcp-router",
+  "version": "1.0.0",
+  "description": "Dynamic database router for @zhadyz/mnemosyne-mcp - auto-detects project databases from .mnemosyne files",
+  "type": "module",
+  "main": "index.js",
+  "bin": {
+    "mnemosyne-mcp-router": "./index.js"
+  },
+  "files": [
+    "index.js",
+    "test-router.js",
+    ".mnemosyne.template",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "start": "node index.js",
+    "test": "node test-router.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zhadyz/mnemosyne-mcp.git",
+    "directory": "mnemosyne-mcp-router"
+  },
+  "bugs": {
+    "url": "https://github.com/zhadyz/mnemosyne-mcp/issues"
+  },
+  "homepage": "https://github.com/zhadyz/mnemosyne-mcp#readme",
+  "keywords": [
+    "mcp",
+    "mnemosyne",
+    "database-router",
+    "neo4j",
+    "model-context-protocol",
+    "dynamic-routing",
+    "project-isolation",
+    "knowledge-graph",
+    "ai-memory"
+  ],
+  "author": "zhadyz",
+  "license": "MIT",
+  "peerDependencies": {
+    "@zhadyz/mnemosyne-mcp": "*"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

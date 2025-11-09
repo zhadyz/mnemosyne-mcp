@@ -1,0 +1,21 @@
+# Mnemosyne Database Configuration
+# Copy this file to your project root as ".mnemosyne"
+
+# Database name (REQUIRED)
+# Must match a database created in Neo4j
+# Use snake_case: my_project, nist_compliance, etc.
+MNEMOSYNE_DATABASE=my_project_name
+
+# Project metadata (OPTIONAL)
+PROJECT_NAME=My Project Name
+RETENTION_DAYS=90
+AUTO_CLEANUP=true
+ISOLATION_LEVEL=project
+
+# Usage:
+# 1. Copy this file to your project root
+# 2. Rename to ".mnemosyne" (remove .template)
+# 3. Edit MNEMOSYNE_DATABASE to your database name
+# 4. Create database in Neo4j: CREATE DATABASE my_project_name;
+# 5. Navigate to project directory in terminal
+# 6. Mnemosyne will automatically route to your database!
